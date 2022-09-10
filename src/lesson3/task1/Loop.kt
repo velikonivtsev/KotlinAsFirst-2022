@@ -2,7 +2,7 @@
 
 package lesson3.task1
 
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -72,7 +72,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int = if (n / 10 == 0) 1 else digitNumber(n / 10) + 1
 
 /**
  * Простая (2 балла)
@@ -80,21 +80,33 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    return if (n <= 2) 1 else fib(n - 1) + fib(n - 2)
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    for (i in 2..sqrt(n * 1.0).toInt()) {
+        if (n % i == 0) return i
+    }
+    return n
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    for (i in n / 2 downTo 2) {
+        if (n % i == 0) return i
+    }
+    return 1
+}
 
 /**
  * Простая (2 балла)
@@ -192,7 +204,18 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var digitSum = 0 // подсчитывает сумму всех символов перебираемых квадратов чисел
+    var sqrNo = 0 // номер числа, в квадрате которого n-ый символ
+    for (i in 1..n) {
+        digitSum += digitNumber(i*i)
+        if (digitSum >= n) {
+            sqrNo = i
+            break
+        }
+    }
+    return ((sqrNo * sqrNo).toDouble() / 10.0.pow((digitSum - n).toDouble())).toInt() % 10
+}
 
 /**
  * Сложная (5 баллов)
@@ -203,4 +226,15 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var digitSum = 0 // подсчитывает сумму всех символов перебираемых чисел Фибоначчи
+    var fibNo = 0 // номер числа Фибоначчи с n-ым символом
+    for (i in 1..n) {
+        digitSum += digitNumber(fib(i))
+        if (digitSum >= n) {
+            fibNo = i
+            break
+        }
+    }
+    return (fib(fibNo).toDouble() / 10.0.pow((digitSum - n).toDouble())).toInt() % 10
+}
