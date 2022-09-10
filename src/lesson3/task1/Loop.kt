@@ -80,8 +80,24 @@ fun digitNumber(n: Int): Int = if (n / 10 == 0) 1 else digitNumber(n / 10) + 1
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
+
+/*
+fun fib(n: Int): Int = if (n <= 2) 1 else fib(n - 1) + fib(n - 2)
+такое решение выдвало timed out
+как я понимаю, так одни и те же числа считаются по несколько раз, что неоптимально :c
+*/
+
 fun fib(n: Int): Int {
-    return if (n <= 2) 1 else fib(n - 1) + fib(n - 2)
+    if (n <= 2) return 1
+    var temp1 = 1
+    var temp2 = 1
+    var fib = 2
+    for (i in 3..n) {
+        fib = temp1 + temp2
+        temp1 = temp2
+        temp2 = fib
+    }
+    return fib
 }
 
 /**
