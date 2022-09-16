@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import lesson1.task1.sqr
 import kotlin.math.*
 
 // Урок 3: циклы
@@ -117,12 +118,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    for (i in n / 2 downTo 2) {
-        if (n % i == 0) return i
-    }
-    return 1
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая (2 балла)
@@ -220,18 +216,21 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int {
-    var digitSum = 0 // подсчитывает сумму всех символов перебираемых квадратов чисел
-    var sqrNo = 0 // номер числа, в квадрате которого n-ый символ
+
+fun anyFunSequenceDigit(n : Int, f: (Int) -> Int) : Int {
+    var digitSum = 0
+    var elementNo = 0
     for (i in 1..n) {
-        digitSum += digitNumber(i*i)
+        digitSum += digitNumber(f(i))
         if (digitSum >= n) {
-            sqrNo = i
+            elementNo = i
             break
         }
     }
-    return ((sqrNo * sqrNo).toDouble() / 10.0.pow((digitSum - n).toDouble())).toInt() % 10
+    return (f(elementNo).toDouble() / 10.0.pow((digitSum - n).toDouble())).toInt() % 10
 }
+
+fun squareSequenceDigit(n: Int): Int = anyFunSequenceDigit(n, ::sqr)
 
 /**
  * Сложная (5 баллов)
@@ -242,15 +241,5 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int {
-    var digitSum = 0 // подсчитывает сумму всех символов перебираемых чисел Фибоначчи
-    var fibNo = 0 // номер числа Фибоначчи с n-ым символом
-    for (i in 1..n) {
-        digitSum += digitNumber(fib(i))
-        if (digitSum >= n) {
-            fibNo = i
-            break
-        }
-    }
-    return (fib(fibNo).toDouble() / 10.0.pow((digitSum - n).toDouble())).toInt() % 10
-}
+fun fibSequenceDigit(n: Int): Int = anyFunSequenceDigit(n, ::fib)
+//Пока нет идей, как можно обобщить и не считать fib каждый раз заново
