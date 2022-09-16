@@ -3,7 +3,7 @@
 package lesson2.task2
 
 import lesson1.task1.sqr
-// import sun.font.TrueTypeFont
+import kotlin.math.*
 
 /**
  * Пример
@@ -60,7 +60,7 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
+fun medianOfThree(a : Int, b : Int, c : Int) : Int = (a + b + c) - minOf(a, b, c) - maxOf(a, b, c)
+
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
-    if (r >= a && (s >= b || s >= c)) true
-    else if (r >= b && (s >= a || s >= c)) true
-    else r >= c && (s >= a || s >= b)
+    min(r, s) >= minOf(a, b, c) && max(r, s) >= medianOfThree(a, b, c)
