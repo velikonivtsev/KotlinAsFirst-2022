@@ -3,6 +3,9 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson3.task1.maxDivisor
+import lesson3.task1.minDivisor
+import kotlin.math.min
 import kotlin.math.sqrt
 
 // Урок 4: списки
@@ -127,7 +130,9 @@ fun abs(v: List<Double>): Double = TODO()
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = TODO()
+fun mean(list: List<Double>): Double =
+    if (list.isEmpty()) 0.0
+    else list.sum() / list.size
 
 /**
  * Средняя (3 балла)
@@ -137,7 +142,15 @@ fun mean(list: List<Double>): Double = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = TODO()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    if (list.isNotEmpty()) {
+        val average = list.sum() / list.size
+        for (i in 0 until list.size) {
+            list[i] -= average
+        }
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -177,7 +190,15 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    var x = n
+    val divisors = mutableListOf<Int>()
+    while (x != 1) {
+        divisors += minDivisor(x)
+        x /= minDivisor(x)
+    }
+    return divisors
+}
 
 /**
  * Сложная (4 балла)
@@ -186,7 +207,8 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
 
 /**
  * Средняя (3 балла)
@@ -250,4 +272,43 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+
+val hundredsDict = listOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
+val dozensDict = listOf("десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
+val unitsDict = listOf("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять",
+    "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
+
+fun upTo999(n: Int, thousand : Boolean) : List<String> {
+    val result999 = mutableListOf<String>()
+    if (n / 100 != 0) result999 += hundredsDict[n / 100 - 1] // _xx
+    if (n % 100 in 1..19) result999 += unitsDict[n % 100 - 1] // x__
+    else {
+
+        if (n / 10 % 10 != 0) result999 += dozensDict[n / 10 % 10 - 1] // x_x
+        if (n % 10 != 0) result999 += unitsDict[n % 10 - 1] // xx_
+    }
+    if (thousand) {
+        if (n % 100 !in 11..19) {
+            if (n % 10 == 1) result999[result999.size - 1] = "одна" // xx_
+            if (n % 10 == 2) result999[result999.size - 1] = "две" // xx_
+        }
+    }
+    return result999
+}
+
+fun thousandForm(n : Int) : String = when {
+    n % 100 in 11..19 -> "тысяч"
+    n % 10 in 2..4 -> "тысячи"
+    n % 10 == 1 -> "тысяча"
+    else -> "тысяч"
+}
+
+fun russian(n: Int): String {
+    val result = mutableListOf<String>()
+    if (n / 1000 != 0) {
+        result += upTo999(n / 1000, true)
+        result += thousandForm(n / 1000)
+    }
+    if (n % 1000 != 0) result += upTo999(n % 1000, false)
+    return result.joinToString(separator = " ")
+}
