@@ -222,7 +222,17 @@ fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO()
+fun sortedChars(word: String): List<String> = word.split("").toList().sorted()
+
+fun hasAnagrams(words: List<String>): Boolean {
+    for (i in 0..words.size - 1) {
+        for (j in i + 1..words.size - 1) {
+            if (sortedChars(words[i]) == sortedChars(words[j])) return true
+        }
+    }
+    return false
+
+}
 
 /**
  * Сложная (5 баллов)
@@ -277,7 +287,15 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (i in 0..list.size - 1) {
+        for (j in i + 1..list.size - 1) {
+            if (list[i] + list[j] == number) return Pair(i, j)
+        }
+    }
+    return Pair(-1, -1)
+
+}
 
 /**
  * Очень сложная (8 баллов)
