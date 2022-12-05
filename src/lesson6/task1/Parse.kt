@@ -188,8 +188,6 @@ fun mostExpensive(description: String): String = TODO()
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    if (roman.length == 0) return -1
-
     val romanDict = mapOf(
         'I' to 1,
         'V' to 5,
@@ -199,7 +197,7 @@ fun fromRoman(roman: String): Int {
         'D' to 500,
         'M' to 1000
     )
-
+    if (roman.length == 0) return -1
     var res = romanDict[roman[roman.length - 1]] ?: return -1
     try {
         for (i in 0..roman.length - 2) {
