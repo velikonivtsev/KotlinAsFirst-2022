@@ -96,7 +96,15 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val res = mutableMapOf<Int, MutableList<String>>()
+    for ((student, grade) in grades) {
+        val currentGrade = res[grade]
+        if (currentGrade != null) currentGrade.add(student)
+        else res[grade] = mutableListOf(student)
+    }
+    return res
+}
 
 /**
  * Простая (2 балла)
@@ -222,16 +230,16 @@ fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun sortedChars(word: String): List<String> = word.split("").toList().sorted()
 
 fun hasAnagrams(words: List<String>): Boolean {
-    for (i in 0..words.size - 1) {
-        for (j in i + 1..words.size - 1) {
-            if (sortedChars(words[i]) == sortedChars(words[j])) return true
-        }
+    val unicCharsSet = mutableSetOf<MutableMap<Char, Int>>()
+    var charsCounter: MutableMap<Char, Int>
+    for (word in words) {
+        charsCounter = mutableMapOf()
+        for (e in word) charsCounter[e] = (charsCounter[e] ?: 0) + 1
+        unicCharsSet.add(charsCounter)
     }
-    return false
-
+    return unicCharsSet.size != words.size
 }
 
 /**
@@ -288,13 +296,14 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i in 0..list.size - 1) {
-        for (j in i + 1..list.size - 1) {
-            if (list[i] + list[j] == number) return Pair(i, j)
-        }
+    val res = mutableMapOf<Int, Int>()
+    for (index in list.indices) {
+        val delta = number - list[index]
+        if (delta in res.keys) {
+            return res[delta]!! to index
+        } else res[list[index]] = index
     }
-    return Pair(-1, -1)
-
+    return -1 to -1
 }
 
 /**
