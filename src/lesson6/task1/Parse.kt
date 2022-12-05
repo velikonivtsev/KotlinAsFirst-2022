@@ -197,7 +197,7 @@ fun fromRoman(roman: String): Int {
         'D' to 500,
         'M' to 1000
     )
-    if (roman.length == 0) return -1
+    if (roman.isEmpty()) return -1
     var res = romanDict[roman[roman.length - 1]] ?: return -1
     try {
         for (i in 0..roman.length - 2) {
