@@ -63,7 +63,13 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        if (line.isNotEmpty() && line[0] == '_') continue
+        writer.write(line)
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**
@@ -282,7 +288,34 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val res = File(outputName).bufferedWriter()
+    var temp = File(inputName).readText()
+
+    temp = Regex("\\*\\*([\\s\\S]*?)\\*\\*").replace(temp) { char ->  // bold
+        "<b>" + char.value.replace("**", "") + "</b>"
+    }
+    temp = Regex("\\*([\\s\\S]*?)\\*").replace(temp) { char -> // italic
+        "<i>" + char.value.replace("*", "") + "</i>"
+    }
+    temp = Regex("~~([\\s\\S]*?)~~").replace(temp) { char ->  // strikethrough
+        "<s>" + char.value.replace("~~", "") + "</s>"
+    }
+
+    val lines = temp.split("\n").toMutableList()
+    for (i in lines.indices) {
+        if (lines[i].trim().isEmpty()) {
+            lines[i] = "</p><p>"
+        }
+    }
+
+    var result = "<html><body><p>${lines.joinToString(separator = "")}</p></body></html>"
+
+    result = Regex("<p></p>").replace(result) { char ->
+       char.value.replace("<p></p>", "")
+    }
+
+    res.write(result)
+    res.close()
 }
 
 /**
