@@ -313,6 +313,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     temp.replace("\r\n\r\n", "</p><p>").also { temp = it }
 //    temp.replace("<p></p>", "\r\n\r\n").also { temp = it }
     val result = "<html><body><p>$temp</p></body></html>"
+
 //    res.write("<html><body><p>${lines.joinToString(separator = "")}</p></body></html>")
     res.write(result)
     res.close()
