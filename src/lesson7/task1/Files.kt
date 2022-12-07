@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import lesson3.task1.digitCountInNumber
+import ru.spbstu.wheels.NullableMonad.map
 import java.io.File
 
 // Урок 7: работа с файлами
@@ -412,8 +413,40 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
+fun listParaLevel(string: String): Int = (string.length - string.replace("    ", "").length) / 4
+
+fun listParaType(string: String): String = when {
+    string.trim().startsWith("*") -> "ul"
+    string.trim().matches(Regex("[\\d]([\\w\\W]*?)")) -> "ol"
+    else -> throw IllegalArgumentException()
+}
+
+fun substringFrom(string: String): Int = string.length - string.replace("^(    )*?(\\*|\\d+.) ".toRegex(), "").length
+
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-    TODO()
+    val lines = File(inputName).readLines()
+    val res = File(outputName).bufferedWriter()
+    val builder = StringBuilder("")
+    val currentStack = mutableListOf<String>()
+    if (lines.isNotEmpty()) {
+        for (j in 0 until lines.size) {
+            val currentLine = lines[j]
+            val level = listParaLevel(currentLine)
+            if (level > (currentStack.size - 1)) {
+                val tag = listParaType(currentLine)
+                builder.append("<$tag>")
+                currentStack.add(tag)
+            } else if (level < (currentStack.size - 1)) {
+                builder.append("</li></${currentStack.removeLast()}></li>")
+            } else {
+                builder.append("</li>")
+            }
+            builder.append("<li>${currentLine.substring(substringFrom(currentLine))}")
+        }
+        while (currentStack.size > 0) builder.append("</li></${currentStack.removeLast()}>")
+    }
+    res.write("<html><body><p>$builder</p></body></html>")
+    res.close()
 }
 
 /**
