@@ -301,18 +301,17 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     regexTagReplace(temp, "~~([\\s\\S]*?)~~", "~~", "s").also { temp = it } // strikethrough
 
     val lines = temp.split("\n").toMutableList()
+    var newParagraph = false
     for (i in lines.indices) {
         if (lines[i].trim().isEmpty()) {
-            lines[i] = "</p><p>"
+            newParagraph = true
+        } else if (newParagraph) {
+            lines[i] = "</p><p>${lines[i]}"
+            newParagraph = false
         }
     }
 
-    var result = "<html><body><p>${lines.joinToString(separator = "")}</p></body></html>"
-
-    // delete empty paragraphs
-    result = Regex("<p></p>").replace(result) { str -> str.value.replace("<p></p>", "") }
-
-    res.write(result)
+    res.write("<html><body><p>${lines.joinToString(separator = "")}</p></body></html>")
     res.close()
 }
 
