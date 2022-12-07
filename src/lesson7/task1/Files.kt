@@ -292,7 +292,6 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
 fun regexTagReplace(string: String, pattern: String, oldTag: String, newTag: String): String =
     Regex(pattern).replace(string) { str -> "<$newTag>" + str.value.replace(oldTag, "") + "</$newTag>" }
 
-
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val res = File(outputName).bufferedWriter()
     var temp = File(inputName).readText()
@@ -311,8 +310,8 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             newParagraph = false
         }
     }
-
-    res.write("<html><body><p>${lines.joinToString(separator = "")}</p></body></html>")
+    val result = "<html><body><p>${lines.joinToString(separator = "")}</p></body></html>"
+    res.write(result)
     res.close()
 }
 
