@@ -303,9 +303,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val lines = temp.split("\n").toMutableList()
     var newParagraph = false
     for (i in lines.indices) {
-        if (lines[i].trim().isEmpty()) {
+        if (lines[i].trim().isNotEmpty()) {
             newParagraph = true
-        } else if (newParagraph) {
+        } else if (newParagraph && i + 1 < lines.size && lines[i + 1].trim().isNotEmpty()) {
             lines[i] = "</p><p>${lines[i]}"
             newParagraph = false
         }
