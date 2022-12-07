@@ -300,17 +300,20 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     regexTagReplace(temp, "\\*([\\s\\S]*?)\\*", "*", "i").also { temp = it } // italic
     regexTagReplace(temp, "~~([\\s\\S]*?)~~", "~~", "s").also { temp = it } // strikethrough
 
-    val lines = temp.split("\n").toMutableList()
-    var newParagraph = false
-    for (i in lines.indices) {
-        if (lines[i].trim().isEmpty()) {
-            newParagraph = true
-        } else if (newParagraph) {
-            lines[i] = "</p><p>${lines[i]}"
-            newParagraph = false
-        }
-    }
-    val result = "<html><body><p>${lines.joinToString(separator = "")}</p></body></html>"
+//    val lines = temp.split("\n").toMutableList()
+//    var newParagraph = false
+//    for (i in lines.indices) {
+//        if (lines[i].trim().isEmpty()) {
+//            newParagraph = true
+//        } else if (newParagraph) {
+//            lines[i] = "</p><p>${lines[i]}"
+//            newParagraph = false
+//        }
+//    }
+    temp.replace("\r\n\r\n", "</p><p>").also { temp = it }
+//    temp.replace("<p></p>", "\r\n\r\n").also { temp = it }
+    val result = "<html><body><p>$temp</p></body></html>"
+//    res.write("<html><body><p>${lines.joinToString(separator = "")}</p></body></html>")
     res.write(result)
     res.close()
 }
