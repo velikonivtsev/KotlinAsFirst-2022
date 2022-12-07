@@ -427,23 +427,21 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
     val res = File(outputName).bufferedWriter()
     val builder = StringBuilder("")
     val currentStack = mutableListOf<String>()
-    if (lines.isNotEmpty()) {
-        for (j in 0 until lines.size) {
-            val currentLine = lines[j]
-            val level = listParaLevel(currentLine)
-            if (level > (currentStack.size - 1)) {
-                val tag = listParaType(currentLine)
-                builder.append("<$tag>")
-                currentStack.add(tag)
-            } else if (level < (currentStack.size - 1)) {
-                builder.append("</li></${currentStack.removeLast()}></li>")
-            } else {
-                builder.append("</li>")
-            }
-            builder.append("<li>${currentLine.substring(substringFrom(currentLine))}")
+    for (j in 0 until lines.size) {
+        val currentLine = lines[j]
+        val level = listParaLevel(currentLine)
+        if (level > (currentStack.size - 1)) {
+            val tag = listParaType(currentLine)
+            builder.append("<$tag>")
+            currentStack.add(tag)
+        } else if (level < (currentStack.size - 1)) {
+            builder.append("</li></${currentStack.removeLast()}></li>")
+        } else {
+            builder.append("</li>")
         }
-        while (currentStack.size > 0) builder.append("</li></${currentStack.removeLast()}>")
+        builder.append("<li>${currentLine.substring(substringFrom(currentLine))}")
     }
+    while (currentStack.size > 0) builder.append("</li></${currentStack.removeLast()}>")
     res.write("<html><body><p>$builder</p></body></html>")
     res.close()
 }
