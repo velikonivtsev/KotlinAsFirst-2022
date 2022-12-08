@@ -334,8 +334,10 @@ fun gcd(n1: Int, n2: Int): Int {
         n1
     } else gcd(n2, n1 % n2)
 }
+
 fun gcdMany(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Int {
     val list = treasures.map { it.value.first } + capacity
+    if (list.size == 1) return list.first()
     var res = 0
     for (i in 1..list.size - 1) gcd(list[i - 1], list[i]).also { res = it }
     return res
