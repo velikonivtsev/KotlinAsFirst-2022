@@ -331,6 +331,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val bag = Array(treasures.size + 1) { IntArray(capacity + 1) }
     val trsNames = treasures.keys.toMutableList()
     val trsCostsAndWeights = treasures.values.toMutableList()
+
     trsCostsAndWeights.forEachIndexed { i, (weight, cost) ->
         for (j in 1..capacity) {
             if (weight <= j) {
@@ -338,6 +339,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             } else bag[i + 1][j] = bag[i][j]
         }
     }
+
     val result = mutableSetOf<String>()
     var remain = capacity
     for (k in treasures.size downTo 1) {
