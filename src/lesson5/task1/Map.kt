@@ -327,23 +327,38 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
+
+//Функции gcd и gcdMany добавлены с целью уменьшить количество значений массива bag и итераций внутреннего цикла for
+fun gcd(n1: Int, n2: Int): Int {
+    return if (n2 == 0) {
+        n1
+    } else gcd(n2, n1 % n2)
+}
+fun gcdMany(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Int {
+    val list = treasures.map { it.value.first } + capacity
+    var res = 0
+    for (i in 1..list.size - 1) gcd(list[i - 1], list[i]).also { res = it }
+    return res
+}
+
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val bag = Array(treasures.size + 1) { IntArray(capacity + 1) }
+    val gcd = gcdMany(treasures, capacity)
+    val bag = Array(treasures.size + 1) { IntArray(capacity / gcd + 1) }
     val trsNames = treasures.keys.toMutableList()
     val trsCostsAndWeights = treasures.values.toMutableList()
     trsCostsAndWeights.forEachIndexed { i, (weight, cost) ->
-        for (j in 1..capacity) {
-            if (weight <= j) {
-                bag[i + 1][j] = maxOf(bag[i][j], cost + bag[i][j - weight])
+        for (j in 1..capacity / gcd) {
+            if (weight <= j * gcd) {
+                bag[i + 1][j] = maxOf(bag[i][j], cost + bag[i][j - weight / gcd])
             } else bag[i + 1][j] = bag[i][j]
         }
     }
     val result = mutableSetOf<String>()
-    var remain = capacity
+    var remain = capacity / gcd
     for (k in treasures.size downTo 1) {
         if (bag[k][remain] != bag[k - 1][remain]) {
             result.add(trsNames[k - 1])
-            remain -= trsCostsAndWeights[k - 1].first
+            remain -= trsCostsAndWeights[k - 1].first / gcd
         }
     }
     return result
