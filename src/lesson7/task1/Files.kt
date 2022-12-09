@@ -2,8 +2,6 @@
 
 package lesson7.task1
 
-import lesson3.task1.digitCountInNumber
-import ru.spbstu.wheels.NullableMonad.map
 import java.io.File
 
 // Урок 7: работа с файлами
@@ -427,11 +425,10 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
     val res = File(outputName).bufferedWriter()
     val builder = StringBuilder("")
     val currentStack = mutableListOf<String>()
-    for (j in 0 until lines.size) {
-        val currentLine = lines[j]
-        val level = listParaLevel(currentLine)
+    for (element in lines) {
+        val level = listParaLevel(element)
         if (level > (currentStack.size - 1)) {
-            val tag = listParaType(currentLine)
+            val tag = listParaType(element)
             builder.append("<$tag>")
             currentStack.add(tag)
         } else if (level < (currentStack.size - 1)) {
@@ -439,7 +436,7 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
         } else {
             builder.append("</li>")
         }
-        builder.append("<li>${currentLine.substring(substringFrom(currentLine))}")
+        builder.append("<li>${element.substring(substringFrom(element))}")
     }
     while (currentStack.size > 0) builder.append("</li></${currentStack.removeLast()}>")
     res.write("<html><body><p>$builder</p></body></html>")
