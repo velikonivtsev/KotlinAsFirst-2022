@@ -327,38 +327,23 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun gcd(n1: Int, n2: Int): Int {
-    return if (n2 == 0) {
-        n1
-    } else gcd(n2, n1 % n2)
-}
-fun gcdMany(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Int {
-    val list = treasures.map { it.value.first } + capacity
-    if (list.isEmpty()) return 1
-    if (list.size == 1) return list.first()
-    var res = 0
-    for (i in 1 until list.size) gcd(list[i - 1], list[i]).also { res = it }
-    return res
-}
-// Попробовал оптимизировать кол-во элеметов в массиве bag и итераций for(line350)
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val gcd = gcdMany(treasures, capacity)
-    val bag = Array(treasures.size + 1) { IntArray(capacity / gcd + 1) }
+    val bag = Array(treasures.size + 1) { IntArray(capacity + 1) }
     val trsNames = treasures.keys.toMutableList()
     val trsCostsAndWeights = treasures.values.toMutableList()
     trsCostsAndWeights.forEachIndexed { i, (weight, cost) ->
-        for (j in 1..capacity / gcd) {
-            if (weight / gcd <= j) {
-                bag[i + 1][j] = maxOf(bag[i][j], cost + bag[i][j - weight / gcd])
+        for (j in 1..capacity) {
+            if (weight <= j) {
+                bag[i + 1][j] = maxOf(bag[i][j], cost + bag[i][j - weight])
             } else bag[i + 1][j] = bag[i][j]
         }
     }
     val result = mutableSetOf<String>()
-    var remain = capacity / gcd
+    var remain = capacity
     for (k in treasures.size downTo 1) {
         if (bag[k][remain] != bag[k - 1][remain]) {
             result.add(trsNames[k - 1])
-            remain -= trsCostsAndWeights[k - 1].first / gcd
+            remain -= trsCostsAndWeights[k - 1].first
         }
     }
     return result
