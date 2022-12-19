@@ -119,11 +119,7 @@ fun bestLongJump(jumps: String): Int {
     var bestJump = -1
     for (attempt in attemptList) {
         if (attempt == "%" || attempt == "-") continue
-        try {
-            bestJump = maxOf(attempt.toInt(), bestJump)
-        } catch (e: NumberFormatException) {
-            return -1
-        }
+        bestJump = attempt.toIntOrNull()?.let { maxOf(it, bestJump) } ?: return -1
     }
     return bestJump
 }
@@ -187,16 +183,18 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
+
+val romanDict = mapOf(
+    'I' to 1,
+    'V' to 5,
+    'X' to 10,
+    'L' to 50,
+    'C' to 100,
+    'D' to 500,
+    'M' to 1000
+)
+
 fun fromRoman(roman: String): Int {
-    val romanDict = mapOf(
-        'I' to 1,
-        'V' to 5,
-        'X' to 10,
-        'L' to 50,
-        'C' to 100,
-        'D' to 500,
-        'M' to 1000
-    )
     if (roman.isEmpty()) return -1
     var res = romanDict[roman[roman.length - 1]] ?: return -1
     try {
@@ -204,8 +202,7 @@ fun fromRoman(roman: String): Int {
             if (romanDict[roman[i]]!! >= romanDict[roman[i+1]]!!) res += romanDict[roman[i]]!!
             else res -= romanDict[roman[i]]!!
         }
-    }
-    catch (e: NullPointerException) {
+    } catch (e: NullPointerException) {
         return -1
     }
     return res

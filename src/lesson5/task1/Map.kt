@@ -233,9 +233,8 @@ fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
 
 fun hasAnagrams(words: List<String>): Boolean {
     val unicCharsSet = mutableSetOf<MutableMap<Char, Int>>()
-    var charsCounter: MutableMap<Char, Int>
     for (word in words) {
-        charsCounter = mutableMapOf()
+        val charsCounter: MutableMap<Char, Int> = mutableMapOf()
         for (e in word) charsCounter[e] = (charsCounter[e] ?: 0) + 1
         unicCharsSet.add(charsCounter)
     }
